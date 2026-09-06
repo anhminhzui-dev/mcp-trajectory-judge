@@ -1,0 +1,54 @@
+Evaluation-Only Licence, version 1.0
+
+Copyright (c) 2026 Vo Ba Hoang Minh. All rights reserved.
+
+This repository is SOURCE-AVAILABLE. It is not open source. It is published so that
+other people can look at the author's work and check for themselves that it does what
+it says. It is not published for reuse.
+
+1. WHAT YOU MAY DO
+
+   You may read this repository, copy it to a machine you control, run it, and run its
+   tests, for one purpose only: to evaluate the work of the copyright holder named
+   above. Quoting a short extract, with attribution, in a review, an article, a hiring
+   assessment, or a due-diligence report is part of that purpose and is permitted.
+
+2. WHAT YOU MAY NOT DO
+
+   Everything not granted in section 1 is reserved. Without the prior written
+   permission of the copyright holder you may not:
+
+   a. redistribute this software, in whole or in part, in source or in compiled form;
+   b. publish, host, mirror, sublicense, sell, rent, or lend it;
+   c. modify it for distribution, or create a derivative work from it;
+   d. incorporate any part of it into another product, service, model, or dataset,
+      including as training or fine-tuning material;
+   e. use it, or anything derived from it, for any commercial purpose, including
+      internal use within a business or other organisation;
+   f. remove or alter this licence, the copyright notice, or any attribution.
+
+3. NO OTHER RIGHTS
+
+   No rights are granted by implication, by estoppel, or otherwise. No patent licence
+   and no trademark licence is granted. If you want to do something this licence does
+   not permit, ask the copyright holder first.
+
+4. TERMINATION
+
+   This permission ends automatically if you breach any term of this licence. On
+   termination you must stop using the software and delete every copy you hold.
+
+5. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+   PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE
+   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+6. NO ACCURACY CLAIM
+
+   Nothing in this repository is a measurement of anything real. Every input under
+   fixtures/ is invented for this repository. No accuracy figure is claimed here and
+   none is computable from what ships here.

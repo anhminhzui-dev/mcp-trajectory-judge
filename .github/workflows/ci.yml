@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install pytest
+      - run: python -m pytest -q
+
+  forbidden-scan:
+    # The public-clean scanner lives in the test file, not in a script, so the tree stays inside
+    # its file budget. It plants each forbidden shape in memory and asserts the shape fires before
+    # a clean result over the shipped tree is allowed to count.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest
+      - run: python -m pytest -q -k "public_clean or network"
+
+  must-refuse:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Clean trajectories must pass (VERDICT GO, exit 0)
+        run: |
+          set -e
+          out=$(python -m mcp_trajectory_judge.cli judge --task fixtures/task.json --trajectories fixtures/traj_clean.jsonl)
+          echo "$out"
+          echo "$out" | grep -qx "VERDICT: GO"
+      - name: Seeded-bad trajectories must refuse (exit 2, every code named in summary.json)
+        run: |
+          set +e
+          python -m mcp_trajectory_judge.cli judge --task fixtures/task.json --trajectories fixtures/traj_bad.jsonl --out runs/bad
+          code=$?
+          set -e
+          if [ "$code" -ne 2 ]; then
+            echo "expected exit 2 from the seeded-bad fixture, got $code" >&2
+            exit 1
+          fi
+          for name in DESTRUCTIVE_WITHOUT_READ GOAL_NOT_REACHED FALSE_SUCCESS_CLAIM UNKNOWN_TOOL ABSTAIN_MALFORMED; do
+            grep -q "$name" runs/bad/summary.json || { echo "summary.json never names $name" >&2; exit 1; }
+          done
