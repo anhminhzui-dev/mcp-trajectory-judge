@@ -1,14 +1,20 @@
 # mcp-trajectory-judge
 
 [![CI](https://github.com/anhminhzui-dev/mcp-trajectory-judge/actions/workflows/ci.yml/badge.svg)](https://github.com/anhminhzui-dev/mcp-trajectory-judge/actions/workflows/ci.yml)
+[![Licence](https://img.shields.io/badge/licence-evaluation--only-blue)](LICENSE)
 
-> "Evaluate how effectively AI agents use MCP tools" — OpenTrain AI, MCP AI Software Evaluation Engineer (job posting)
+**Check what a tool trajectory did, not merely what its final message claims.**
 
-Built for this posting, in a day, to show the shape of what I would do on day one.
+A deterministic judge for synthetic MCP-style trajectories, replayed in a six-tool in-memory sandbox. It validates arguments, recomputes tool results and checks the resulting state. It reports named failures, or abstains when replay is impossible.
 
-## To the OpenTrain AI reviewer
+```text
+task + tool manifest → typed calls → in-memory replay → safety / goal checks
+                    → PASS / FAIL / ABSTAIN → hash-bound receipt
+```
 
-This replays a recorded MCP tool-call trajectory against a deterministic in-memory sandbox — six tools, one synthetic task, one golden reference sequence — and returns PASS, FAIL with named codes, or ABSTAIN when the row could not be replayed at all, so a judgment is never a vibe and never a number without a denominator. To run it in sixty seconds: copy the tree, `python -m pytest -q`, then the two commands under **Run it** — the first returns GO and exit 0, the second refuses and exits 2. It is not a model, not a benchmark result and not a measurement of any real agent: everything under `fixtures/` is invented for this repository.
+The manifest supports compact required arguments and a JSON-Schema-like form with optional arguments. Receipt files omit paths, arguments and file contents. The fixture's golden sequence supplies a step-count reference; the judge does not compare semantic equivalence with that sequence.
+
+This is an offline replay prototype, not a live MCP server integration or a benchmark of a real agent. The fixtures are invented, and the sandbox implements only its declared tools.
 
 ## What it refuses
 
@@ -81,13 +87,19 @@ $ python -m pytest -q
 
 20 of 20 tests pass: one per rule, four on the manifest dialects, one that halts on a row without the synthetic marker, one that proves the receipts are byte-stable, one that proves the trace carries no content, one public-clean scan that plants five forbidden shapes and requires each to fire before a clean tree counts, and `test_falsifier_destructive_check_disabled_lets_bad_pass`, which switches the destructive-path rule off and asserts the seeded-bad trajectory then walks through as PASS. A checker that has never been shown to miss something certifies nothing.
 
-## What this is not
+## Scope and integration
 
-**No accuracy is claimed here and none is computable from what ships here.** Every trajectory, task and file under `fixtures/` is invented for this repository; no real agent, model, customer, dataset or internal system appears anywhere in it. There is no network code path — a test greps `src/` for the network-capable imports and fails on a hit — and no model is called, so the judge is deterministic by construction rather than by promise. Every threshold is a design constant of this project, not a validated operating point: the step budget of 8, the loop threshold of 3, the completion-phrase list, and the choice to rank on (verdict, violations, steps). The 6 tools and 6 trajectories here are a demonstration of shape, not a benchmark.
+Six synthetic tool contracts and six trajectories provide an inspectable replay sandbox. The judge is deterministic and offline; no real MCP server or model is called. These examples demonstrate contract checking, not general-purpose agent accuracy.
 
-## What I would do on day one at OpenTrain AI
+Step/loop budgets, completion phrases and ranking order are project policy settings. Integration with real tools requires matching contracts, representative traces and independently assessed operating thresholds.
 
-Day one I would ask for three things: the tool manifests, ten recorded trajectories a human already judged, and the disagreements. Then I would turn this sandbox into a replay harness for one server — every tool deterministic, every check named, every judgment carrying the hash of the bytes it judged — and score it against those human judgments, reporting agreement with its denominator and every disagreement read by hand. Golden reference sequences come next, one per task, written so efficiency is a ratio against them rather than an opinion. What I would not do is ship a judge that has never been shown to miss something: the falsifier test in this repository is the habit, not the demo.
+## Integration path
+
+Day one I would ask for three things: the tool manifests, ten recorded trajectories a human already judged, and the disagreements. Then I would turn this sandbox into a replay harness for one server — every tool deterministic, every check named, every judgment carrying the hash of the bytes it judged — and score it against those human judgments, reporting agreement with its denominator and every disagreement read by hand. The current golden field supplies only a step-count reference. Any future sequence-level comparison would need its own semantics and tests. What I would not do is ship a judge that has never been shown to miss something: the falsifier test in this repository is the habit, not the demo.
+
+## Project context
+
+Problem definition, architecture and acceptance review: **Minh Vo**, with AI-assisted implementation. This focused tool belongs to a broader body of data, assessment and training-systems work described in the [research overview](https://github.com/anhminhzui-dev#research-engineering-the-evidence-behind-ai-judgement). Its runnable scope is the mechanism documented here.
 
 ## Licence
 
