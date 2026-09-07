@@ -1,5 +1,7 @@
 # mcp-trajectory-judge
 
+[![CI](https://github.com/anhminhzui-dev/mcp-trajectory-judge/actions/workflows/ci.yml/badge.svg)](https://github.com/anhminhzui-dev/mcp-trajectory-judge/actions/workflows/ci.yml)
+
 > "Evaluate how effectively AI agents use MCP tools" — OpenTrain AI, MCP AI Software Evaluation Engineer (job posting)
 
 Built for this posting, in a day, to show the shape of what I would do on day one.
@@ -29,6 +31,8 @@ Three run-level halts sit above those: `NOT_SYNTHETIC`, on any row missing the `
 **Manifest dialects.** A tool may be declared either way. The compact form `{"required": {"path": "str"}}` means every argument the tool declares is required. The JSON-Schema form `{"properties": {"path": "str", "recursive": "bool"}, "required": ["path"]}` separates the two: a name in `properties` but outside `required` is optional, and a trajectory that passes it is admitted once its type matches - which is what a real server manifest means by `limit` or `recursive`. Names the manifest never declares are still `ARG_SCHEMA_VIOLATION`, and so is a declared name carrying the wrong type, a boolean in an `int` slot included. `fixtures/task_optional.json` is the JSON-Schema variant of the same task, and `fixtures/traj_optional.jsonl` holds one trajectory that uses an optional argument and passes beside one that passes an undeclared argument and is refused, so the two halves of the rule are visible in a single run.
 
 Every step in a trajectory carries the result the agent recorded at the time. The judge never trusts it: it recomputes each result in its own sandbox, and the goal assertions are checked against that recomputed end state.
+
+This prototype recomputes tool-and-argument calls in an in-memory toy sandbox. It does not validate recorded results against a live MCP server; that integration is the next engineering step, not a capability claimed by these fixtures.
 
 ## Run it
 
@@ -88,4 +92,3 @@ Day one I would ask for three things: the tool manifests, ten recorded trajector
 ## Licence
 
 Source-available, evaluation-only — read it, run it, quote it in a review; see `LICENSE`.
-
